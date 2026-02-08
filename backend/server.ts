@@ -1,0 +1,35 @@
+import dotenv from "dotenv";
+import express from "express"; // ES6 import syntax
+import mongoose from "mongoose";
+const app = express();
+dotenv.config();
+const port = process.env.PORT;
+
+const connectDB = async () => {
+  try {
+    await mongoose.connect(process.env.MONGODB_URI as string);
+  } catch (error) {
+    console.error("❌ MongoDB connection error:", error);
+  }
+};
+
+mongoose.connection.on("connected", () => {
+  console.log("🚀 Connected to MongoDB successfully");
+});
+
+mongoose.connection.on("error", (err) => {
+  console.error("⚠️ MongoDB connection fault:", err);
+});
+
+mongoose.connection.on("disconnected", () => {
+  console.log("🔌 MongoDB disconnected");
+});
+
+connectDB();
+
+app.get("/", (req: any, res: any) => {
+  res.send("Hello World!");
+});
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`);
+});
