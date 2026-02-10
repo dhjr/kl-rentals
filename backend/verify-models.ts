@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { User } from "./models/User";
-import { Car } from "./models/Car";
-import { Booking } from "./models/Booking";
+import { User } from "./models/User.js";
+import { Car } from "./models/Car.js";
+import { Booking } from "./models/Booking.js";
 
 dotenv.config();
 
@@ -28,7 +28,7 @@ const verifyModels = async () => {
     // 2. Create a Test Car
     const testCar = new Car({
       make: "Toyota",
-      model: "Camry",
+      carModel: "Camry",
       year: 2022,
       pricePerDay: 50,
       capacity: 5,

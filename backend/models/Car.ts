@@ -1,23 +1,8 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-export interface ICar extends Document {
-  make: string;
-  carModel: string;
-  year: number;
-  pricePerDay: number;
-  capacity: number;
-  transmission: "Automatic" | "Manual";
-  fuelType: "Petrol" | "Diesel" | "Electric" | "Hybrid";
-  owner: mongoose.Types.ObjectId;
-  photos: string[];
-  available: boolean;
-  location: string;
-  description?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
 
-const CarSchema = new Schema<ICar>(
+
+const CarSchema = new Schema(
   {
     make: { type: String, required: true },
     carModel: { type: String, required: true },
@@ -43,4 +28,4 @@ const CarSchema = new Schema<ICar>(
   { timestamps: true },
 );
 
-export const Car = mongoose.model<ICar>("Car", CarSchema);
+export const Car = mongoose.model("Car", CarSchema);

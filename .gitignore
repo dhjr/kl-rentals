@@ -1,0 +1,24 @@
+# Dependencies
+**/node_modules/
+
+# Build files
+backend/dist/
+frontend/build/
+frontend/.next/   # If using Next.js
+
+# Environment & Secrets
+.env
+*.env.local
+
+# Debug logs
+*.log
+
+# IDEs
+.vscode/
+.idea/
+
+# Ignore build/dist folders in any directory
+**/dist/
+**/build/
+.next/
+out/

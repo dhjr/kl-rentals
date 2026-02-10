@@ -1,18 +1,6 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-export interface IBooking extends Document {
-  user: mongoose.Types.ObjectId;
-  car: mongoose.Types.ObjectId;
-  startDate: Date;
-  endDate: Date;
-  totalAmount: number;
-  status: "Pending" | "Approved" | "Cancelled" | "Completed";
-  transactionId?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-const BookingSchema = new Schema<IBooking>(
+const BookingSchema = new Schema(
   {
     user: { type: Schema.Types.ObjectId, ref: "User", required: true },
     car: { type: Schema.Types.ObjectId, ref: "Car", required: true },
@@ -29,4 +17,4 @@ const BookingSchema = new Schema<IBooking>(
   { timestamps: true },
 );
 
-export const Booking = mongoose.model<IBooking>("Booking", BookingSchema);
+export const Booking = mongoose.model("Booking", BookingSchema);
