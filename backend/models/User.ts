@@ -15,14 +15,20 @@ const userSchema = new mongoose.Schema(
   { timestamps: true },
 );
 
-// Password Hashing Middleware (Pre-save)
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+// models/User.ts
+
+// ✅ Use a regular function (not arrow function) to keep 'this' context
+// ✅ Remove 'next' from the arguments if using async
+userSchema.pre("save", async function () {
+  // 'this' refers to the user document
+  if (!this.isModified("password")) return;
+
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
-  next();
-});
 
+  // No need to call next() here!
+  // Returning from an async function is enough.
+});
 // Helper method to compare passwords
 userSchema.methods.comparePassword = async function (
   candidatePassword: string,

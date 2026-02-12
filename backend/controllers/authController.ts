@@ -1,6 +1,8 @@
-import { Request, Response } from "express";
-import User from "../models/User";
-import { generateToken } from "../utils/jwt";
+//controller is used to handle initial signup and signin
+
+import type { Request, Response } from "express";
+import User from "../models/User.js";
+import { generateToken } from "../utils/jwt.js";
 
 export const signup = async (req: Request, res: Response) => {
   try {
@@ -20,7 +22,11 @@ export const signup = async (req: Request, res: Response) => {
       .status(201)
       .json({ token, user: { id: user._id, name, email, role: user.role } });
   } catch (error) {
-    res.status(500).json({ message: "Server Error", error });
+    console.error("AUTH_ERROR:", error); // This will print the full error in your terminal
+    res.status(500).json({
+      message: "Signup error",
+      error: error instanceof Error ? error.message : error,
+    });
   }
 };
 
@@ -41,6 +47,10 @@ export const signin = async (req: Request, res: Response) => {
     const token = generateToken(user._id.toString(), user.role);
     res.status(200).json({ token, user: { id: user._id, role: user.role } });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
+    console.error("AUTH_ERROR:", error); // This will print the full error in your terminal
+    res.status(500).json({
+      message: "Signin error",
+      error: error instanceof Error ? error.message : error,
+    });
   }
 };

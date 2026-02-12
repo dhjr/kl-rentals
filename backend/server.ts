@@ -1,7 +1,10 @@
 import dotenv from "dotenv";
 import express from "express"; // ES6 import syntax
 import mongoose from "mongoose";
+import authRoutes from "./routes/authRoutes.js";
+
 const app = express();
+app.use(express.json());
 dotenv.config();
 const port = process.env.PORT;
 
@@ -30,6 +33,10 @@ connectDB();
 app.get("/", (req: any, res: any) => {
   res.send("Hello World!");
 });
+
+// ... other middleware (cors, express.json)
+app.use("/api/v1/auth", authRoutes);
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
 });
