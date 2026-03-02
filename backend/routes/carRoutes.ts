@@ -1,11 +1,16 @@
 import express from "express";
-import { protect, authorize } from "../middleware/authMiddleware";
+import { getAllCars, addCar, deleteCar } from "../controllers/carController.js";
+import { protect, authorize } from "../middleware/Authorization.js";
+
 const router = express.Router();
 
-// Public route
-router.get("/", someFUnc);
+// Public Route: Anyone can see cars
+router.get("/get-cars", getAllCars);
 
-// Protected route: Only logged in ADMINS can add cars
-router.post("/add", protect, authorize("admin"), addCar);
+// Protected Routes: Only logged-in Admins or Sellers can add/remove cars
+router.post("/add-car", protect, authorize("admin", "seller"), addCar);
+
+// Example for deleting:
+router.delete("/delete-:id", protect, authorize("admin", "seller"), deleteCar);
 
 export default router;

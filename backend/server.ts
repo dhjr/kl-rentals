@@ -1,7 +1,8 @@
 import dotenv from "dotenv";
-import express from "express"; // ES6 import syntax
+import express from "express";
 import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
+import carRoutes from "./routes/carRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -31,11 +32,12 @@ mongoose.connection.on("disconnected", () => {
 connectDB();
 
 app.get("/", (req: any, res: any) => {
-  res.send("Hello World!");
+  res.send(`Server is working on port ${port}`);
 });
 
 // ... other middleware (cors, express.json)
 app.use("/api/v1/auth", authRoutes);
+app.use("/booking", carRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);
