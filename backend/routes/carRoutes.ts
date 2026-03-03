@@ -14,7 +14,7 @@ const router = express.Router();
 router.get("/get-cars", getCatalog);
 
 // Protected Routes: Only logged-in Admins or Sellers can add/remove cars
-router.post("/catalog", protect, authorize("admin"), addToCatalog);
+router.post("/catalog", protect, authorize("seller", "admin"), addToCatalog);
 
 router.post(
   "/inventory",

@@ -2,7 +2,7 @@ import { VehicleInstance, VehicleCatalog } from "../models/Car.js";
 import type { Response } from "express";
 
 // Get all available cars (Public)
-export const getCatalog = async (req, res) => {
+export const getCatalog = async (req: any, res: any) => {
   try {
     // This query finds all models and checks how many units are 'available'
     const catalog = await VehicleCatalog.aggregate([
@@ -48,7 +48,7 @@ export const getCatalog = async (req, res) => {
       },
     ]);
     res.status(200).json(catalog);
-  } catch (error) {
+  } catch (error: any) {
     res
       .status(500)
       .json({ message: "Error fetching catalog", error: error.message });
@@ -140,7 +140,7 @@ export const deleteCar = async (req: any, res: any) => {
 
     // 2. Authorization Check: Admin can delete anything, Sellers only their own cars
     // req.user.id comes from your 'protect' middleware
-    if (req.user.role !== "admin" && car.owner.toString() !== req.user.id) {
+    if (req.user.role !== "admin" && car.owner?.toString() !== req.user.id) {
       return res
         .status(403)
         .json({ message: "You do not have permission to delete this car" });
@@ -148,7 +148,7 @@ export const deleteCar = async (req: any, res: any) => {
 
     // 3. Perform Soft Delete (Recommended)
     // This keeps the record but hides it from 'getAllCars'
-    car.available = false;
+    car.status = "unavailable";
     // You could also add a field like 'isDeleted: true' if you want to keep 'isAvailable' for rentals
     await car.save();
 
@@ -182,7 +182,7 @@ export const updateCar = async (req: any, res: Response) => {
     }
 
     // 2. Authorization Check (Admin or Owner)
-    if (req.user.role !== "admin" && car.owner.toString() !== req.user.id) {
+    if (req.user.role !== "admin" && car.owner?.toString() !== req.user.id) {
       return res
         .status(403)
         .json({ message: "Not authorized to update this car" });

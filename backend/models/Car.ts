@@ -25,7 +25,7 @@ const VehicleInstanceSchema = new mongoose.Schema({
   currentLocation: { type: String, required: true },
   status: {
     type: String,
-    enum: ["available", "rented", "maintenance"],
+    enum: ["available", "rented", "maintenance","unavailable"],
     default: "available",
   },
   owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },

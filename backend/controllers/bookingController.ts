@@ -1,35 +1,57 @@
 import Booking from "../models/Booking.js";
-import Car from "../models/Car.js";
+import { VehicleInstance } from "../models/Car.js";
 
 export const createBooking = async (req: any, res: any) => {
   try {
-    const { carId, startDate, endDate } = req.body;
-    const car = await Car.findById(carId);
+    const { instanceId, startDate, endDate } = req.body;
 
-    if (!car || !car.available) {
-      return res
-        .status(400)
-        .json({ message: "Car is currently not available for rent" });
+    // 1. Populate 'catalogItem' (matching your schema field name)
+    const instance = (await VehicleInstance.findById(instanceId).populate(
+      "catalogItem",
+    )) as any;
+
+    if (!instance) {
+      return res.status(404).json({ message: "Vehicle unit not found" });
     }
 
-    // Calculate total price: (Days between dates) * pricePerDay
+    if (instance.status !== "available") {
+      return res
+        .status(400)
+        .json({ message: "This car is currently not available" });
+    }
+
+    // 2. Date Calculation
     const start = new Date(startDate);
     const end = new Date(endDate);
-    const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+    const diffTime = end.getTime() - start.getTime();
+    const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
-    if (days <= 0)
+    if (days <= 0) {
       return res
         .status(400)
         .json({ message: "End date must be after start date" });
+    }
 
-    const totalPrice = days * car.pricePerDay;
+    // 3. Access 'basePricePerDay' from 'catalogItem'
+    // Using instance.catalogItem instead of instance.catalog
+    const pricePerDay = instance.catalogItem?.basePricePerDay;
 
+    if (!pricePerDay) {
+      return res
+        .status(400)
+        .json({ message: "Pricing data missing for this vehicle" });
+    }
+
+    const totalPrice = days * pricePerDay;
+
+    // 4. Create the booking
     const newBooking = await Booking.create({
-      car: carId,
-      user: req.user.id, // From 'protect' middleware
+      vehicleInstance: instanceId,
+      user: req.user.id,
       startDate,
       endDate,
       totalPrice,
+      status: "pending",
     });
 
     res.status(201).json({ success: true, data: newBooking });
@@ -38,24 +60,25 @@ export const createBooking = async (req: any, res: any) => {
   }
 };
 
-export const checkoutBooking = async (req, res) => {
+export const checkoutBooking = async (req: any, res: any) => {
   try {
     const booking = await Booking.findById(req.params.id);
 
     if (!booking) return res.status(404).json({ message: "Booking not found" });
 
-    // 1. Mark booking as 'active' (meaning the trip has started)
     booking.status = "active";
     await booking.save();
 
-    // 2. Mark the car as NOT available for others to see/book
-    await Car.findByIdAndUpdate(booking.car, { isAvailable: false });
+    // Update the physical unit using the correct ID field from your schema
+    await VehicleInstance.findByIdAndUpdate(booking.vehicleInstance, {
+      status: "rented",
+    });
 
     res.status(200).json({
       success: true,
-      message: "Check-out successful! The car is now marked as Rented.",
+      message: "Check-out successful! The vehicle is now marked as Rented.",
     });
-  } catch (error) {
+  } catch (error: any) {
     res.status(400).json({ message: error.message });
   }
 };

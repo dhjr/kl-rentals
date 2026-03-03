@@ -7,7 +7,7 @@ import { protect } from "../middleware/Authorization.js";
 
 const router = express.Router();
 
-router.post("/reserve", protect, createBooking);
+router.post("/book", protect, createBooking);
 router.patch("/checkout/:id", protect, checkoutBooking); // 'id' is the Booking ID
 
 export default router;
