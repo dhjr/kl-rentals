@@ -77,19 +77,22 @@ export const deleteCar = async (req: any, res: any) => {
       status: "success",
       message: "Car has been successfully removed from the listings.",
     });
-  } catch (error) {
+  } catch (error: any) {
     res
       .status(500)
       .json({ message: "Error deleting car", error: error.message });
   }
 };
 
-export const updateCar = async (req, res) => {
+export const updateCar = async (req: any, res: Response) => {
   try {
     const { id } = req.params;
 
     // 1. Find the car
     let car = await Car.findById(id);
+
+    console.log("1. ID from Params:", req.params.id);
+    console.log("2. Body from Request:", req.body); // Check if pricePerDay is here
 
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
@@ -115,7 +118,7 @@ export const updateCar = async (req, res) => {
       message: "Car details updated successfully",
       data: car,
     });
-  } catch (error) {
+  } catch (error: any) {
     res
       .status(400)
       .json({ message: "Error updating car", error: error.message });

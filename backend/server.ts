@@ -37,7 +37,7 @@ app.get("/", (req: any, res: any) => {
 
 // ... other middleware (cors, express.json)
 app.use("/api/v1/auth", authRoutes);
-app.use("/booking", carRoutes);
+app.use("/car", carRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

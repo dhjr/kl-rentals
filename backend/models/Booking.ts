@@ -1,20 +1,35 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const BookingSchema = new Schema(
-  {
-    user: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    car: { type: Schema.Types.ObjectId, ref: "Car", required: true },
-    startDate: { type: Date, required: true },
-    endDate: { type: Date, required: true },
-    totalAmount: { type: Number, required: true },
-    status: {
-      type: String,
-      enum: ["Pending", "Approved", "Cancelled", "Completed"],
-      default: "Pending",
-    },
-    transactionId: { type: String },
+const bookingSchema = new mongoose.Schema({
+  car: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Car",
+    required: [true, "A booking must belong to a car"],
   },
-  { timestamps: true },
-);
+  user: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+    required: [true, "A booking must belong to a user"],
+  },
+  startDate: {
+    type: Date,
+    required: [true, "A booking must have a start date"],
+  },
+  endDate: {
+    type: Date,
+    required: [true, "A booking must have an end date"],
+  },
+  totalPrice: Number,
+  status: {
+    type: String,
+    enum: ["pending", "confirmed", "active", "completed", "cancelled"],
+    default: "pending",
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now(),
+  },
+});
 
-export const Booking = mongoose.model("Booking", BookingSchema);
+const Booking = mongoose.model("Booking", bookingSchema);
+export default Booking;
