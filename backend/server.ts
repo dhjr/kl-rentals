@@ -3,6 +3,7 @@ import express from "express";
 import mongoose from "mongoose";
 import authRoutes from "./routes/authRoutes.js";
 import carRoutes from "./routes/carRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 
 const app = express();
 app.use(express.json());
@@ -37,7 +38,8 @@ app.get("/", (req: any, res: any) => {
 
 // ... other middleware (cors, express.json)
 app.use("/api/v1/auth", authRoutes);
-app.use("/car", carRoutes);
+app.use("/api/car", carRoutes);
+app.use("/api/reviews", reviewRoutes);
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

@@ -2,7 +2,6 @@
 // Checks if the user has appropriate authorization when they try to perform an operation such as book a car, or add a car.
 // used for avoiding access to a route, if they are not signed in, and so on.
 
-
 import type { Response, NextFunction } from "express";
 import jwt from "jsonwebtoken";
 

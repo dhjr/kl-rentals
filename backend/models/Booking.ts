@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 
 const bookingSchema = new mongoose.Schema({
-  car: {
+  // Point to the specific physical car unit
+  vehicleInstance: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: "Car",
-    required: [true, "A booking must belong to a car"],
+    ref: "VehicleInstance",
+    required: [true, "A booking must be linked to a specific vehicle instance"],
   },
+  // Point to the user renting it
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -19,15 +21,20 @@ const bookingSchema = new mongoose.Schema({
     type: Date,
     required: [true, "A booking must have an end date"],
   },
-  totalPrice: Number,
+  totalPrice: {
+    type: Number,
+    required: true,
+  },
   status: {
     type: String,
     enum: ["pending", "confirmed", "active", "completed", "cancelled"],
     default: "pending",
   },
+  // Optional: Capture the location at the time of booking
+  pickupLocation: String,
   createdAt: {
     type: Date,
-    default: Date.now(),
+    default: Date.now,
   },
 });
 

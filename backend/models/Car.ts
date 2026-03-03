@@ -1,31 +1,41 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose from "mongoose";
 
-const CarSchema = new Schema(
-  {
-    make: { type: String, required: true },
-    carModel: { type: String, required: true },
-    year: { type: Number, required: true },
-    pricePerDay: { type: Number, required: true },
-    capacity: { type: Number, required: true },
-    transmission: {
-      type: String,
-      enum: ["Automatic", "Manual"],
-      required: true,
-    },
-    fuelType: {
-      type: String,
-      enum: ["Petrol", "Diesel", "Electric", "Hybrid"],
-      required: true,
-    },
-    owner: { type: Schema.Types.ObjectId, ref: "User", required: true },
-    photos: [{ type: String }],
-    available: { type: Boolean, default: true },
-    location: { type: String, required: true },
-    description: { type: String },
+// 1. VEHICLE CATALOG (The Specs)
+const VehicleCatalogSchema = new mongoose.Schema({
+  make: { type: String, required: true },
+  model: { type: String, required: true },
+  year: Number,
+  capacity: Number,
+  fuelType: { type: String, enum: ["Petrol", "Diesel", "Electric", "Hybrid"] },
+  transmission: { type: String, enum: ["Manual", "Automatic"] },
+  basePricePerDay: { type: Number, required: true },
+  description: String,
+  images: [String], // General images for the model
+});
+
+// 2. VEHICLE INVENTORY (The Actual Units)
+const VehicleInstanceSchema = new mongoose.Schema({
+  catalogItem: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "VehicleCatalog",
+    required: true,
   },
-  { timestamps: true },
+  registrationNumber: { type: String, required: true, unique: true },
+  color: { type: String, required: true },
+  currentLocation: { type: String, required: true },
+  status: {
+    type: String,
+    enum: ["available", "rented", "maintenance"],
+    default: "available",
+  },
+  owner: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+});
+
+export const VehicleCatalog = mongoose.model(
+  "VehicleCatalog",
+  VehicleCatalogSchema,
 );
-
-const Car = mongoose.model("Car", CarSchema);
-
-export default Car;
+export const VehicleInstance = mongoose.model(
+  "VehicleInstance",
+  VehicleInstanceSchema,
+);

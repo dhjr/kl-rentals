@@ -1,46 +1,130 @@
+import { VehicleInstance, VehicleCatalog } from "../models/Car.js";
 import type { Response } from "express";
-import Car from "../models/Car.js";
 
 // Get all available cars (Public)
-export const getAllCars = async (req: any, res: Response) => {
+export const getCatalog = async (req, res) => {
   try {
-    const cars = await Car.find({ available: true });
-    res.status(200).json(cars);
+    // This query finds all models and checks how many units are 'available'
+    const catalog = await VehicleCatalog.aggregate([
+      {
+        $lookup: {
+          from: "vehicleinstances", // The collection name for VehicleInstance
+          localField: "_id",
+          foreignField: "catalogItem",
+          as: "inventory",
+        },
+      },
+      // Add this stage to your existing aggregate in getCatalog
+      {
+        $lookup: {
+          from: "reviews",
+          localField: "_id",
+          foreignField: "vehicleCatalog",
+          as: "reviews",
+        },
+      },
+      {
+        $addFields: {
+          averageRating: { $avg: "$reviews.rating" },
+          totalReviews: { $size: "$reviews" },
+        },
+      },
+      {
+        $project: {
+          make: 1,
+          model: 1,
+          basePricePerDay: 1,
+          capacity: 1,
+          availableCount: {
+            $size: {
+              $filter: {
+                input: "$inventory",
+                as: "item",
+                cond: { $eq: ["$$item.status", "available"] },
+              },
+            },
+          },
+        },
+      },
+    ]);
+    res.status(200).json(catalog);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching cars" });
+    res
+      .status(500)
+      .json({ message: "Error fetching catalog", error: error.message });
   }
 };
 
-// Add a new car (Admin/Seller Only)
-export const addCar = async (req: any, res: Response) => {
+// @desc    Add a new car model to the catalog
+// @route   POST /api/cars/catalog
+// @access  Admin Only
+export const addToCatalog = async (req: any, res: any) => {
   try {
-    // 1. Destructure using the field names defined in your Schema
     const {
       make,
-      carModel,
+      model,
       year,
-      pricePerDay,
       capacity,
-      transmission,
       fuelType,
-      location,
+      transmission,
+      basePricePerDay,
+      description,
+      images,
     } = req.body;
 
-    const newCar = await Car.create({
+    // Check if this model already exists to avoid duplicates
+    const existingModel = await VehicleCatalog.findOne({ make, model, year });
+    if (existingModel) {
+      return res
+        .status(400)
+        .json({ message: "This car model already exists in the catalog." });
+    }
+
+    const newCatalogItem = await VehicleCatalog.create({
       make,
-      carModel,
+      model,
       year,
-      pricePerDay,
       capacity,
-      transmission,
       fuelType,
-      location,
-      owner: req.user?.id, // Changed from 'seller' to 'owner'
+      transmission,
+      basePricePerDay,
+      description,
+      images,
     });
 
-    res.status(201).json(newCar);
+    res.status(201).json({
+      success: true,
+      message: "New model added to catalog successfully",
+      data: newCatalogItem,
+    });
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error adding to catalog", error: error.message });
+  }
+};
+
+export const addCarInstance = async (req: any, res: Response) => {
+  try {
+    const {
+      catalogId, // You now need to link it to a Catalog ID
+      registrationNumber,
+      color,
+      currentLocation,
+    } = req.body;
+
+    const newInstance = await VehicleInstance.create({
+      catalogItem: catalogId,
+      registrationNumber,
+      color,
+      currentLocation,
+      owner: req.user?.id,
+      status: "available",
+    });
+
+    res.status(201).json(newInstance);
   } catch (error) {
-    res.status(400).json({ message: "Error adding car", error });
+    res.status(400).json({ message: "Error adding vehicle unit", error });
   }
 };
 
@@ -49,8 +133,7 @@ export const deleteCar = async (req: any, res: any) => {
     const { id } = req.params;
 
     // 1. Find the car first to check ownership
-    const car = await Car.findById(id);
-
+    const car = await VehicleInstance.findById(id);
     if (!car) {
       return res.status(404).json({ message: "Car not found" });
     }
@@ -89,7 +172,7 @@ export const updateCar = async (req: any, res: Response) => {
     const { id } = req.params;
 
     // 1. Find the car
-    let car = await Car.findById(id);
+    let car = await VehicleInstance.findById(id);
 
     console.log("1. ID from Params:", req.params.id);
     console.log("2. Body from Request:", req.body); // Check if pricePerDay is here
@@ -108,7 +191,7 @@ export const updateCar = async (req: any, res: Response) => {
     // 3. Update the car
     // new: true returns the updated document instead of the old one
     // runValidators: true ensures the update follows your Schema rules
-    car = await Car.findByIdAndUpdate(id, req.body, {
+    car = await VehicleInstance.findByIdAndUpdate(id, req.body, {
       new: true,
       runValidators: true,
     });
