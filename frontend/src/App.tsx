@@ -6,22 +6,25 @@ import Register from "./pages/Register";
 import Cars from "./pages/Cars";
 import CarDetails from "./pages/CarDetails";
 import Bookings from "./pages/Bookings";
+import { ThemeProvider } from "./contexts/ThemeContext";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Cars />} />
-          <Route path="about" element={<About />} />
-          <Route path="login" element={<Login />} />
-          <Route path="register" element={<Register />} />
-          <Route path="cars" element={<Cars />} />
-          <Route path="cars/:id" element={<CarDetails />} />
-          <Route path="bookings" element={<Bookings />} />
-        </Route>
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Cars />} />
+            <Route path="about" element={<About />} />
+            <Route path="login" element={<Login />} />
+            <Route path="register" element={<Register />} />
+            <Route path="cars" element={<Cars />} />
+            <Route path="cars/:id" element={<CarDetails />} />
+            <Route path="bookings" element={<Bookings />} />
+          </Route>
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   );
 }
 

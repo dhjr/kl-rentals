@@ -11,7 +11,7 @@ const Cars = () => {
 
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8 text-slate-900 tracking-tight">
+      <h1 className="text-3xl font-bold mb-8 text-slate-900 dark:text-white tracking-tight transition-colors">
         Available Cars
       </h1>
 
@@ -19,32 +19,32 @@ const Cars = () => {
         {dummyCars.map((car) => (
           <div
             key={car.id}
-            className="bg-white rounded-2xl shadow-sm hover:shadow-md border border-slate-200 overflow-hidden flex flex-col transition-all duration-300 group"
+            className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col transition-all duration-300 group"
           >
             <div className="overflow-hidden">
-              <div className="h-48 bg-slate-100 flex items-center justify-center text-slate-400 group-hover:scale-105 transition-transform duration-500">
+              <div className="h-48 bg-slate-100 dark:bg-slate-950 flex items-center justify-center text-slate-400 dark:text-slate-500 group-hover:scale-105 transition-transform duration-500">
                 [Image Placeholder]
               </div>
             </div>
-            <div className="p-5 grow flex flex-col justify-between z-10 bg-white">
+            <div className="p-5 grow flex flex-col justify-between z-10 bg-white dark:bg-slate-900 transition-colors">
               <div>
-                <h2 className="text-xl font-bold mb-1 text-slate-900">
+                <h2 className="text-xl font-bold mb-1 text-slate-900 dark:text-white">
                   {car.name}
                 </h2>
-                <div className="flex justify-between text-sm text-slate-500 mb-4 font-medium">
+                <div className="flex justify-between text-sm text-slate-500 dark:text-slate-400 mb-4 font-medium transition-colors">
                   <span>{car.type}</span>
                 </div>
               </div>
-              <div className="flex justify-between items-center mt-auto pt-4 border-t border-slate-100">
-                <span className="text-lg font-bold text-slate-900">
+              <div className="flex justify-between items-center mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 transition-colors">
+                <span className="text-lg font-bold text-slate-900 dark:text-white">
                   ${car.price}
-                  <span className="text-sm text-slate-500 font-medium ml-1">
+                  <span className="text-sm text-slate-500 dark:text-slate-400 font-medium ml-1">
                     / day
                   </span>
                 </span>
                 <Link
                   to={`/cars/${car.id}`}
-                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 shadow-sm transition-colors"
+                  className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 dark:hover:bg-blue-500 shadow-sm transition-colors"
                 >
                   View Details
                 </Link>
