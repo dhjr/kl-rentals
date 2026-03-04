@@ -1,6 +1,21 @@
 import Booking from "../models/Booking.js";
 import { VehicleInstance } from "../models/Car.js";
 
+export const getUserBookings = async (req: any, res: any) => {
+  try {
+    const bookings = await Booking.find({ user: req.user.id })
+      .populate({
+        path: "vehicleInstance",
+        populate: { path: "catalogItem" },
+      })
+      .sort("-createdAt");
+
+    res.status(200).json({ success: true, data: bookings });
+  } catch (error: any) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
 export const createBooking = async (req: any, res: any) => {
   try {
     const { instanceId, startDate, endDate } = req.body;

@@ -45,7 +45,15 @@ export const signin = async (req: Request, res: Response) => {
 
     // 3. Generate token
     const token = generateToken(user._id.toString(), user.role);
-    res.status(200).json({ token, user: { id: user._id, role: user.role } });
+    res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
   } catch (error) {
     console.error("AUTH_ERROR:", error); // This will print the full error in your terminal
     res.status(500).json({
