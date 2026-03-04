@@ -7,6 +7,7 @@ import Register from "./pages/Register";
 import Cars from "./pages/Cars";
 import CarDetails from "./pages/CarDetails";
 import Bookings from "./pages/Bookings";
+import Profile from "./pages/Profile";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -28,6 +29,7 @@ function App() {
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
                 <Route path="bookings" element={<Bookings />} />
+                <Route path="profile" element={<Profile />} />
               </Route>
             </Route>
           </Routes>

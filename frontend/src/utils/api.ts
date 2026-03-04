@@ -17,13 +17,18 @@ export const carService = {
     try {
       // Endpoint is /api/car/get-cars
       const response = await apiClient.get("/car/get-cars");
-
-      // Depending on the backend response structure, you might need to extract data
-      // e.g. return response.data.cars if the response is { cars: [...] }
-      // For now we assume the payload itself is the array, or response.data contains it.
       return response.data;
     } catch (error) {
       console.error("Error fetching cars:", error);
+      throw error;
+    }
+  },
+  getCarById: async (id: string): Promise<VehicleCatalog> => {
+    try {
+      const response = await apiClient.get(`/car/get-car/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error("Error fetching car details:", error);
       throw error;
     }
   },

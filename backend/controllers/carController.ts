@@ -207,3 +207,17 @@ export const updateCar = async (req: any, res: Response) => {
       .json({ message: "Error updating car", error: error.message });
   }
 };
+// Get a single car by ID
+export const getCarById = async (req: any, res: any) => {
+  try {
+    const car = await VehicleCatalog.findById(req.params.id);
+    if (!car) {
+      return res.status(404).json({ message: "Car not found" });
+    }
+    res.status(200).json(car);
+  } catch (error: any) {
+    res
+      .status(500)
+      .json({ message: "Error fetching car", error: error.message });
+  }
+};

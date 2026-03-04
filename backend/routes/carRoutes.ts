@@ -1,6 +1,7 @@
 import express from "express";
 import {
   getCatalog,
+  getCarById,
   addToCatalog,
   addCarInstance,
   deleteCar,
@@ -12,6 +13,7 @@ const router = express.Router();
 
 // Public Route: Anyone can see cars
 router.get("/get-cars", getCatalog);
+router.get("/get-car/:id", getCarById);
 
 // Protected Routes: Only logged-in Admins or Sellers can add/remove cars
 router.post("/catalog", protect, authorize("seller", "admin"), addToCatalog);

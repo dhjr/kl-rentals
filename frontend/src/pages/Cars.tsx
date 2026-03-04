@@ -81,7 +81,7 @@ const Cars = () => {
                 </div>
                 <div className="flex justify-between items-center mt-auto pt-4 border-t border-slate-100 dark:border-slate-800 transition-colors">
                   <span className="text-lg font-bold text-slate-900 dark:text-white">
-                    ${car.basePricePerDay}
+                    ₹{car.basePricePerDay}
                     <span className="text-sm text-slate-500 dark:text-slate-400 font-medium ml-1">
                       / day
                     </span>
