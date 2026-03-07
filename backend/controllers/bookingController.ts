@@ -164,8 +164,8 @@ export const createCheckoutSession = async (req: any, res: any) => {
         },
       ],
       mode: "payment",
-      success_url: `http://localhost:5173/payment-success?session_id={CHECKOUT_SESSION_ID}&booking_id=${newBooking._id}`,
-      cancel_url: `http://localhost:5173/payment-cancelled?booking_id=${newBooking._id}`,
+      success_url: `${process.env.FRONTEND_URL || "http://localhost:5173"}/payment-success?session_id={CHECKOUT_SESSION_ID}&booking_id=${newBooking._id}`,
+      cancel_url: `${process.env.FRONTEND_URL || "http://localhost:5173"}/payment-cancelled?booking_id=${newBooking._id}`,
       metadata: {
         bookingId: newBooking._id.toString(),
       },

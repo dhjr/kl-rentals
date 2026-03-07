@@ -8,7 +8,16 @@ import reviewRoutes from "./routes/reviewRoutes.js";
 import bookingRoutes from "./routes/bookingRoutes.js";
 
 const app = express();
-app.use(cors());
+app.use(
+  cors({
+    origin: [
+      "http://localhost:5173",
+      "https://klrentals.vercel.app",
+      process.env.FRONTEND_URL || "https://klrentals.vercel.app",
+    ],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 dotenv.config();
 const port = process.env.PORT;
