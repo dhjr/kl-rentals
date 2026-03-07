@@ -26,11 +26,41 @@ const SellerDashboard = () => {
     fetchInventory();
   }, []);
 
+  const handleDelete = async (id: string) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to disable this vehicle? It will no longer appear in public listings.",
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(`http://localhost:3000/api/car/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to disable vehicle");
+      }
+
+      // Refresh the list
+      fetchInventory();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
   const fetchInventory = async () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/v1/cars/seller-inventory",
+        "http://localhost:3000/api/car/seller-inventory",
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -167,7 +197,10 @@ const SellerDashboard = () => {
                   <button className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors">
                     <Edit2 size={16} /> Edit
                   </button>
-                  <button className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors">
+                  <button
+                    onClick={() => handleDelete(car._id)}
+                    className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                  >
                     <Trash2 size={16} /> Disable
                   </button>
                 </div>

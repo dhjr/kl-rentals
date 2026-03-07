@@ -32,7 +32,12 @@ const Register = () => {
       }
 
       register(data.token, data.user);
-      navigate("/");
+
+      if (data.user.role === "seller") {
+        navigate("/seller-dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {

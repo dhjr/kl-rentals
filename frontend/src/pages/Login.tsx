@@ -33,7 +33,7 @@ const Login = () => {
 
       // Redirect based on role
       if (data.user.role === "seller") {
-        navigate("/profile");
+        navigate("/seller-dashboard");
       } else {
         navigate("/");
       }

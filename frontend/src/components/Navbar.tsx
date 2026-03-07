@@ -27,11 +27,11 @@ function Navbar() {
   const NavLinks = () => (
     <>
       <Link
-        to="/"
+        to={user?.role === "seller" ? "/seller-dashboard" : "/"}
         className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         onClick={() => setIsMenuOpen(false)}
       >
-        Home
+        {user?.role === "seller" ? "Dashboard" : "Home"}
       </Link>
 
       {(!user || user.role !== "seller") && (
