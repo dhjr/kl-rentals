@@ -45,12 +45,26 @@ export default function About() {
 
       {/* Story Section */}
       <section className="grid md:grid-cols-2 gap-12 items-center px-4">
-        <div className="rounded-3xl overflow-hidden shadow-2xl shadow-blue-500/10">
-          <img
-            src="https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?auto=format&fit=crop&q=80&w=1000"
-            alt="Our mission"
-            className="w-full h-[400px] object-cover"
-          />
+        <div className="rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-blue-600 to-blue-800 p-8 flex flex-col justify-center text-white h-[400px]">
+          <h3 className="text-3xl font-extrabold mb-4 tracking-tight">
+            Why choose us?
+          </h3>
+          <p className="text-lg text-blue-100 mb-8 leading-relaxed">
+            We are committed to providing the best rental experience possible.
+            Our focus on quality, safety, and customer satisfaction sets us
+            apart from the competition.
+          </p>
+          <div className="flex gap-4 items-center">
+            <div className="bg-white/20 p-4 rounded-2xl backdrop-blur-sm">
+              <Shield size={32} className="text-white" />
+            </div>
+            <div>
+              <div className="font-bold text-xl">100% Secure</div>
+              <div className="text-blue-200 text-sm">
+                Every transaction is fully protected
+              </div>
+            </div>
+          </div>
         </div>
         <div className="space-y-6">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-sm font-bold border border-blue-100 dark:border-blue-800">

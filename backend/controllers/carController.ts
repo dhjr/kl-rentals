@@ -33,6 +33,10 @@ export const getCatalog = async (req: any, res: any) => {
         $project: {
           make: 1,
           model: 1,
+          images: 1,
+          year: 1,
+          fuelType: 1,
+          transmission: 1,
           basePricePerDay: 1,
           capacity: 1,
           availableCount: {

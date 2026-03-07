@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Layout from "./Layout";
-import Home from "./pages/Home";
 import About from "./pages/About";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -12,8 +11,11 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import SellerDashboard from "./pages/SellerDashboard";
+import SellerLanding from "./pages/SellerLanding";
 import AddCar from "./pages/AddCar";
 import EditCar from "./pages/EditCar";
+import LandingRouter from "./pages/LandingRouter";
+import CustomerDashboard from "./pages/CustomerDashboard";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -25,29 +27,46 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route path="/" element={<Layout />}>
-              <Route index element={<Home />} />
+              {/* Dynamic Root Route */}
+              <Route index element={<LandingRouter />} />
+
               <Route path="about" element={<About />} />
               <Route path="login" element={<Login />} />
               <Route path="register" element={<Register />} />
               <Route path="cars" element={<Cars />} />
               <Route path="cars/:id" element={<CarDetails />} />
 
-              {/* Protected Routes */}
+              {/* Shared Protected Routes (Payment, Profile) */}
               <Route element={<ProtectedRoute />}>
-                <Route
-                  path="booking-confirmation/:id"
-                  element={<BookingConfirmation />}
-                />
+                <Route path="profile" element={<Profile />} />
+                <Route path="payment-success" element={<PaymentSuccess />} />
+                <Route path="payment-cancelled" element={<PaymentCancel />} />
+              </Route>
+
+              {/* Seller Protected Routes */}
+              <Route element={<ProtectedRoute allowedRoles={["seller"]} />}>
+                <Route path="seller-home" element={<SellerLanding />} />
                 <Route path="seller-dashboard" element={<SellerDashboard />} />
                 <Route path="seller-dashboard/add-car" element={<AddCar />} />
                 <Route
                   path="seller-dashboard/edit-car/:id"
                   element={<EditCar />}
                 />
+              </Route>
+
+              {/* Customer Protected Routes */}
+              <Route
+                element={<ProtectedRoute allowedRoles={["user", "customer"]} />}
+              >
+                <Route
+                  path="customer-dashboard"
+                  element={<CustomerDashboard />}
+                />
                 <Route path="bookings" element={<Bookings />} />
-                <Route path="profile" element={<Profile />} />
-                <Route path="payment-success" element={<PaymentSuccess />} />
-                <Route path="payment-cancelled" element={<PaymentCancel />} />
+                <Route
+                  path="booking-confirmation/:id"
+                  element={<BookingConfirmation />}
+                />
               </Route>
             </Route>
           </Routes>

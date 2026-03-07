@@ -27,24 +27,40 @@ function Navbar() {
   const NavLinks = () => (
     <>
       <Link
-        to={user?.role === "seller" ? "/seller-dashboard" : "/"}
+        to={user?.role === "seller" ? "/seller-home" : "/"}
         className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
         onClick={() => setIsMenuOpen(false)}
       >
-        {user?.role === "seller" ? "Dashboard" : "Home"}
+        Home
       </Link>
 
-      {(!user || user.role !== "seller") && (
-        <>
-          <Link
-            to="/cars"
-            className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-            onClick={() => setIsMenuOpen(false)}
-          >
-            Browse Cars
-          </Link>
-        </>
+      {user?.role === "seller" && (
+        <Link
+          to="/seller-dashboard"
+          className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          My Fleet
+        </Link>
       )}
+
+      {(!user || user.role !== "seller") && (
+        <Link
+          to="/cars"
+          className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Browse Cars
+        </Link>
+      )}
+
+      <Link
+        to="/about"
+        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+        onClick={() => setIsMenuOpen(false)}
+      >
+        About Us
+      </Link>
 
       {user && user.role !== "seller" && (
         <Link
@@ -62,7 +78,7 @@ function Navbar() {
     <nav className="sticky top-0 z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
       <div className="container mx-auto px-4 py-4 flex justify-between items-center">
         <Link
-          to="/"
+          to={user?.role === "seller" ? "/seller-home" : "/"}
           className="flex items-center gap-2 text-xl font-bold text-slate-900 dark:text-white"
           onClick={() => setIsMenuOpen(false)}
         >
