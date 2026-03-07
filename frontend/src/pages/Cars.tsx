@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Loader2 } from "lucide-react";
+import { Loader2, Search } from "lucide-react";
 import { carService } from "../utils/api";
 import type { VehicleCatalog } from "../types";
 
@@ -8,6 +8,7 @@ const Cars = () => {
   const [cars, setCars] = useState<VehicleCatalog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     const fetchCars = async () => {
@@ -25,11 +26,37 @@ const Cars = () => {
     fetchCars();
   }, []);
 
+  const filteredCars = cars.filter((car) => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      car.make.toLowerCase().includes(searchLower) ||
+      car.model.toLowerCase().includes(searchLower) ||
+      (car.fuelType && car.fuelType.toLowerCase().includes(searchLower)) ||
+      (car.transmission && car.transmission.toLowerCase().includes(searchLower))
+    );
+  });
+
   return (
     <div>
-      <h1 className="text-3xl font-bold mb-8 text-slate-900 dark:text-white tracking-tight transition-colors">
-        Available Cars
-      </h1>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+        <h1 className="text-3xl font-bold text-slate-900 dark:text-white tracking-tight transition-colors">
+          Available Cars
+        </h1>
+
+        {/* Search Bar */}
+        <div className="relative w-full md:w-72">
+          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-slate-400" />
+          </div>
+          <input
+            type="text"
+            className="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
+            placeholder="Search make or model..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
+        </div>
+      </div>
 
       {isLoading ? (
         <div className="flex justify-center items-center py-32">
@@ -42,12 +69,14 @@ const Cars = () => {
       ) : cars.length === 0 ? (
         <div className="text-center py-32 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
           <p className="text-slate-500 dark:text-slate-400 text-lg">
-            No cars available at the moment.
+            {searchQuery
+              ? "No cars match your search."
+              : "No cars available at the moment."}
           </p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {cars.map((car) => (
+          {filteredCars.map((car) => (
             <div
               key={car._id}
               className="bg-white dark:bg-slate-900 rounded-2xl shadow-sm hover:shadow-md border border-slate-200 dark:border-slate-800 overflow-hidden flex flex-col transition-all duration-300 group"

@@ -1,6 +1,14 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Car, Edit2, Trash2, Loader2, RotateCcw } from "lucide-react";
+import {
+  Plus,
+  Car,
+  Edit2,
+  Trash2,
+  Loader2,
+  RotateCcw,
+  Search,
+} from "lucide-react";
 
 interface VehicleInstance {
   _id: string;
@@ -21,6 +29,7 @@ const SellerDashboard = () => {
   const [inventory, setInventory] = useState<VehicleInstance[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
 
   useEffect(() => {
     fetchInventory();
@@ -139,126 +148,172 @@ const SellerDashboard = () => {
             Manage your vehicle fleet and listings
           </p>
         </div>
-        <Link
-          to="/seller-dashboard/add-car"
-          className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-xl font-semibold shadow-lg shadow-blue-500/20 transition-all shrink-0"
-        >
-          <Plus size={20} />
-          Add New Vehicle
-        </Link>
+        <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+          {/* Search Bar */}
+          <div className="relative w-full sm:w-64">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <Search className="h-5 w-5 text-slate-400" />
+            </div>
+            <input
+              type="text"
+              className="block w-full pl-10 pr-3 py-2 border border-slate-200 dark:border-slate-700 rounded-xl leading-5 bg-white dark:bg-slate-900 text-slate-900 dark:text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm transition-colors"
+              placeholder="Search make, model, or Reg No..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+
+          <Link
+            to="/seller-dashboard/add-car"
+            className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-6 py-2.5 rounded-xl font-semibold shadow-lg shadow-blue-500/20 transition-all shrink-0"
+          >
+            <Plus size={20} />
+            Add New Vehicle
+          </Link>
+        </div>
       </div>
 
       {error ? (
         <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-xl border border-red-200 dark:border-red-800">
           {error}
         </div>
-      ) : inventory.length === 0 ? (
-        <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col items-center">
-          <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 text-slate-400">
-            <Car size={32} />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
-            No Vehicles Found
-          </h2>
-          <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
-            You haven't listed any vehicles yet. Start earning by adding your
-            first car to the KL Rentals platform.
-          </p>
-          <Link
-            to="/seller-dashboard/add-car"
-            className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-xl font-semibold hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
-          >
-            <Plus size={20} />
-            List a Vehicle Now
-          </Link>
-        </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {inventory.map((car) => (
-            <div
-              key={car._id}
-              className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group"
-            >
-              <div className="h-48 bg-slate-100 dark:bg-slate-800 relative">
-                {car.catalogItem.images && car.catalogItem.images.length > 0 ? (
-                  <img
-                    src={car.catalogItem.images[0]}
-                    alt={car.catalogItem.model}
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center text-slate-400">
-                    <Car size={40} />
-                  </div>
-                )}
-                <div
-                  className={`absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider backdrop-blur-md ${
-                    car.status === "available"
-                      ? "bg-emerald-500/90 text-white"
-                      : "bg-slate-900/90 text-white"
-                  }`}
+        (() => {
+          const filteredInventory = inventory.filter((car) => {
+            const searchLower = searchQuery.toLowerCase();
+            return (
+              car.catalogItem.make.toLowerCase().includes(searchLower) ||
+              car.catalogItem.model.toLowerCase().includes(searchLower) ||
+              car.registrationNumber.toLowerCase().includes(searchLower) ||
+              car.color.toLowerCase().includes(searchLower) ||
+              car.status.toLowerCase().includes(searchLower)
+            );
+          });
+
+          if (filteredInventory.length === 0 && inventory.length > 0) {
+            return (
+              <div className="text-center py-20 bg-slate-50 dark:bg-slate-900/50 rounded-2xl border border-dashed border-slate-200 dark:border-slate-800">
+                <p className="text-slate-500 dark:text-slate-400 text-lg">
+                  No vehicles match your search.
+                </p>
+              </div>
+            );
+          }
+
+          if (inventory.length === 0) {
+            return (
+              <div className="bg-white dark:bg-slate-900 rounded-3xl p-12 text-center border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col items-center">
+                <div className="w-20 h-20 bg-slate-100 dark:bg-slate-800 rounded-full flex items-center justify-center mb-6 text-slate-400">
+                  <Car size={32} />
+                </div>
+                <h2 className="text-2xl font-bold text-slate-900 dark:text-white mb-2">
+                  No Vehicles Found
+                </h2>
+                <p className="text-slate-500 dark:text-slate-400 mb-8 max-w-md">
+                  You haven't listed any vehicles yet. Start earning by adding
+                  your first car to the KL Rentals platform.
+                </p>
+                <Link
+                  to="/seller-dashboard/add-car"
+                  className="flex items-center gap-2 bg-slate-900 dark:bg-white text-white dark:text-slate-900 px-6 py-3 rounded-xl font-semibold hover:bg-slate-800 dark:hover:bg-slate-100 transition-colors"
                 >
-                  {car.status}
-                </div>
+                  <Plus size={20} />
+                  List a Vehicle Now
+                </Link>
               </div>
+            );
+          }
 
-              <div className="p-5">
-                <div className="flex justify-between items-start mb-4">
-                  <div>
-                    <h3 className="text-lg font-bold text-slate-900 dark:text-white">
-                      {car.catalogItem.make} {car.catalogItem.model}
-                    </h3>
-                    <p className="text-sm text-slate-500 dark:text-slate-400">
-                      {car.catalogItem.year} • {car.color}
-                    </p>
-                  </div>
-                  <div className="text-right">
-                    <p className="text-lg font-extrabold text-blue-600 dark:text-blue-400">
-                      ₹{car.catalogItem.basePricePerDay}
-                    </p>
-                    <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                      Per Day
-                    </p>
-                  </div>
-                </div>
-
-                <div className="mb-6 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl">
-                  <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
-                    Registration No.
-                  </p>
-                  <p className="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">
-                    {car.registrationNumber}
-                  </p>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                  <Link
-                    to={`/seller-dashboard/edit-car/${car._id}`}
-                    className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors"
-                  >
-                    <Edit2 size={16} /> Edit
-                  </Link>
-
-                  {car.status === "unavailable" ? (
-                    <button
-                      onClick={() => handleEnable(car._id)}
-                      className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/10 hover:bg-emerald-100 dark:hover:bg-emerald-900/20 rounded-xl transition-colors"
+          return (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredInventory.map((car) => (
+                <div
+                  key={car._id}
+                  className="bg-white dark:bg-slate-900 rounded-3xl overflow-hidden border border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-all group"
+                >
+                  <div className="h-48 bg-slate-100 dark:bg-slate-800 relative">
+                    {car.catalogItem.images &&
+                    car.catalogItem.images.length > 0 ? (
+                      <img
+                        src={car.catalogItem.images[0]}
+                        alt={car.catalogItem.model}
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center text-slate-400">
+                        <Car size={40} />
+                      </div>
+                    )}
+                    <div
+                      className={`absolute top-4 right-4 px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-wider backdrop-blur-md ${
+                        car.status === "available"
+                          ? "bg-emerald-500/90 text-white"
+                          : "bg-slate-900/90 text-white"
+                      }`}
                     >
-                      <RotateCcw size={16} /> Enable
-                    </button>
-                  ) : (
-                    <button
-                      onClick={() => handleDelete(car._id)}
-                      className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
-                    >
-                      <Trash2 size={16} /> Disable
-                    </button>
-                  )}
+                      {car.status}
+                    </div>
+                  </div>
+
+                  <div className="p-5">
+                    <div className="flex justify-between items-start mb-4">
+                      <div>
+                        <h3 className="text-lg font-bold text-slate-900 dark:text-white">
+                          {car.catalogItem.make} {car.catalogItem.model}
+                        </h3>
+                        <p className="text-sm text-slate-500 dark:text-slate-400">
+                          {car.catalogItem.year} • {car.color}
+                        </p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-extrabold text-blue-600 dark:text-blue-400">
+                          ₹{car.catalogItem.basePricePerDay}
+                        </p>
+                        <p className="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wider">
+                          Per Day
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="mb-6 bg-slate-50 dark:bg-slate-800/50 p-3 rounded-xl">
+                      <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
+                        Registration No.
+                      </p>
+                      <p className="font-mono text-sm font-bold text-slate-700 dark:text-slate-300">
+                        {car.registrationNumber}
+                      </p>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
+                      <Link
+                        to={`/seller-dashboard/edit-car/${car._id}`}
+                        className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors"
+                      >
+                        <Edit2 size={16} /> Edit
+                      </Link>
+
+                      {car.status === "unavailable" ? (
+                        <button
+                          onClick={() => handleEnable(car._id)}
+                          className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/10 hover:bg-emerald-100 dark:hover:bg-emerald-900/20 rounded-xl transition-colors"
+                        >
+                          <RotateCcw size={16} /> Enable
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleDelete(car._id)}
+                          className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                        >
+                          <Trash2 size={16} /> Disable
+                        </button>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          );
+        })()
       )}
     </div>
   );
