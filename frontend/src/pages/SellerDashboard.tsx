@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { Plus, Car, Edit2, Trash2, Loader2 } from "lucide-react";
+import { Plus, Car, Edit2, Trash2, Loader2, RotateCcw } from "lucide-react";
 
 interface VehicleInstance {
   _id: string;
@@ -37,16 +37,54 @@ const SellerDashboard = () => {
 
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:3000/api/car/${id}`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
+      const response = await fetch(
+        `http://localhost:3000/api/car/delete-${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      });
+      );
 
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || "Failed to disable vehicle");
+      }
+
+      // Refresh the list
+      fetchInventory();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  const handleEnable = async (id: string) => {
+    if (
+      !window.confirm(
+        "Are you sure you want to enable this vehicle? It will become visible in public listings again.",
+      )
+    ) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("token");
+      const response = await fetch(
+        `http://localhost:3000/api/car/update-${id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ status: "available" }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to enable vehicle");
       }
 
       // Refresh the list
@@ -194,15 +232,28 @@ const SellerDashboard = () => {
                 </div>
 
                 <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100 dark:border-slate-800">
-                  <button className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors">
-                    <Edit2 size={16} /> Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(car._id)}
-                    className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                  <Link
+                    to={`/seller-dashboard/edit-car/${car._id}`}
+                    className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-slate-700 dark:text-slate-300 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-xl transition-colors"
                   >
-                    <Trash2 size={16} /> Disable
-                  </button>
+                    <Edit2 size={16} /> Edit
+                  </Link>
+
+                  {car.status === "unavailable" ? (
+                    <button
+                      onClick={() => handleEnable(car._id)}
+                      className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/10 hover:bg-emerald-100 dark:hover:bg-emerald-900/20 rounded-xl transition-colors"
+                    >
+                      <RotateCcw size={16} /> Enable
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => handleDelete(car._id)}
+                      className="flex items-center justify-center gap-2 py-2.5 text-sm font-semibold text-red-600 dark:text-red-400 bg-red-50 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 rounded-xl transition-colors"
+                    >
+                      <Trash2 size={16} /> Disable
+                    </button>
+                  )}
                 </div>
               </div>
             </div>

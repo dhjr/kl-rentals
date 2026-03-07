@@ -13,6 +13,7 @@ import PaymentCancel from "./pages/PaymentCancel";
 import BookingConfirmation from "./pages/BookingConfirmation";
 import SellerDashboard from "./pages/SellerDashboard";
 import AddCar from "./pages/AddCar";
+import EditCar from "./pages/EditCar";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -39,6 +40,10 @@ function App() {
                 />
                 <Route path="seller-dashboard" element={<SellerDashboard />} />
                 <Route path="seller-dashboard/add-car" element={<AddCar />} />
+                <Route
+                  path="seller-dashboard/edit-car/:id"
+                  element={<EditCar />}
+                />
                 <Route path="bookings" element={<Bookings />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="payment-success" element={<PaymentSuccess />} />

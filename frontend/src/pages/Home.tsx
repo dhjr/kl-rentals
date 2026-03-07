@@ -10,8 +10,10 @@ import {
 } from "lucide-react";
 import { carService } from "../utils/api";
 import type { VehicleCatalog } from "../types";
+import { useAuth } from "../contexts/AuthContext";
 
 export default function Home() {
+  const { user } = useAuth();
   const [featuredCars, setFeaturedCars] = useState<VehicleCatalog[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -225,25 +227,28 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="bg-blue-600 dark:bg-blue-700 rounded-3xl p-10 md:p-14 text-center text-white shadow-lg relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
-        <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
-        <div className="relative z-10">
-          <h2 className="text-3xl md:text-4xl font-bold mb-6">
-            Ready for your next trip?
-          </h2>
-          <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
-            Join thousands of satisfied customers who trust KL Rentals for their
-            transportation needs. Book now and get 15% off your first rental.
-          </p>
-          <Link
-            to="/register"
-            className="inline-block bg-white text-blue-700 hover:bg-blue-50 px-8 py-4 rounded-xl font-bold text-lg transition-colors shadow-md"
-          >
-            Create an Account
-          </Link>
-        </div>
-      </section>
+      {!user && (
+        <section className="bg-blue-600 dark:bg-blue-700 rounded-3xl p-10 md:p-14 text-center text-white shadow-lg relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl -translate-y-1/2 translate-x-1/3"></div>
+          <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 rounded-full blur-3xl translate-y-1/2 -translate-x-1/3"></div>
+          <div className="relative z-10">
+            <h2 className="text-3xl md:text-4xl font-bold mb-6">
+              Ready for your next trip?
+            </h2>
+            <p className="text-blue-100 text-lg mb-8 max-w-2xl mx-auto">
+              Join thousands of satisfied customers who trust KL Rentals for
+              their transportation needs. Book now and get 15% off your first
+              rental.
+            </p>
+            <Link
+              to="/register"
+              className="inline-block bg-white text-blue-700 hover:bg-blue-50 px-8 py-4 rounded-xl font-bold text-lg transition-colors shadow-md"
+            >
+              Create an Account
+            </Link>
+          </div>
+        </section>
+      )}
     </div>
   );
 }
