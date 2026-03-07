@@ -33,21 +33,20 @@ function Navbar() {
       >
         Home
       </Link>
-      <Link
-        to="/cars"
-        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-        onClick={() => setIsMenuOpen(false)}
-      >
-        Browse Cars
-      </Link>
-      <Link
-        to="/about"
-        className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-        onClick={() => setIsMenuOpen(false)}
-      >
-        About
-      </Link>
-      {user && (
+
+      {(!user || user.role !== "seller") && (
+        <>
+          <Link
+            to="/cars"
+            className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+            onClick={() => setIsMenuOpen(false)}
+          >
+            Browse Cars
+          </Link>
+        </>
+      )}
+
+      {user && user.role !== "seller" && (
         <Link
           to="/bookings"
           className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"

@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import {
@@ -16,6 +16,7 @@ import type { VehicleCatalog } from "../types";
 
 const CarDetails = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [car, setCar] = useState<VehicleCatalog | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -74,26 +75,21 @@ const CarDetails = () => {
     setIsBooking(true);
     setBookingError(null);
 
-    try {
-      const response = await carService.createCheckoutSession({
-        catalogId: id!,
+    // Calculate days for state passing
+    const diffTime = endDate.getTime() - startDate.getTime();
+    const days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    // Redirect to confirmation page instead of going to stripe directly
+    navigate(`/booking-confirmation/${id}`, {
+      state: {
         startDate: startDate.toISOString(),
         endDate: endDate.toISOString(),
-      });
+        totalPrice,
+        days,
+      },
+    });
 
-      // Redirect to Stripe checkout page
-      if (response && response.url) {
-        window.location.href = response.url;
-      } else {
-        throw new Error("Failed to receive checkout URL");
-      }
-    } catch (err: any) {
-      setBookingError(
-        err.response?.data?.message ||
-          "Failed to process booking request. Please try again.",
-      );
-      setIsBooking(false);
-    }
+    setIsBooking(false);
   };
 
   const onDateChange = (dates: [Date | null, Date | null]) => {

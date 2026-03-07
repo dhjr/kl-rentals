@@ -30,7 +30,13 @@ const Login = () => {
       }
 
       login(data.token, data.user);
-      navigate("/");
+
+      // Redirect based on role
+      if (data.user.role === "seller") {
+        navigate("/profile");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {

@@ -49,9 +49,34 @@ export const getCatalog = async (req: any, res: any) => {
     ]);
     res.status(200).json(catalog);
   } catch (error: any) {
+    res;
     res
       .status(500)
       .json({ message: "Error fetching catalog", error: error.message });
+  }
+};
+
+// @desc    Get all vehicles owned by the logged in seller
+// @route   GET /api/cars/seller-inventory
+// @access  Seller Only
+export const getSellerInventory = async (req: any, res: Response) => {
+  try {
+    const sellerId = req.user.id;
+
+    // Find all instances owned by this seller and populate the catalog info
+    const inventory = await VehicleInstance.find({ owner: sellerId })
+      .populate("catalogItem")
+      .sort({ createdAt: -1 });
+
+    res.status(200).json({
+      success: true,
+      data: inventory,
+    });
+  } catch (error: any) {
+    res.status(500).json({
+      message: "Error fetching seller inventory",
+      error: error.message,
+    });
   }
 };
 

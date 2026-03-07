@@ -10,6 +10,9 @@ import Bookings from "./pages/Bookings";
 import Profile from "./pages/Profile";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import PaymentCancel from "./pages/PaymentCancel";
+import BookingConfirmation from "./pages/BookingConfirmation";
+import SellerDashboard from "./pages/SellerDashboard";
+import AddCar from "./pages/AddCar";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -30,6 +33,12 @@ function App() {
 
               {/* Protected Routes */}
               <Route element={<ProtectedRoute />}>
+                <Route
+                  path="booking-confirmation/:id"
+                  element={<BookingConfirmation />}
+                />
+                <Route path="seller-dashboard" element={<SellerDashboard />} />
+                <Route path="seller-dashboard/add-car" element={<AddCar />} />
                 <Route path="bookings" element={<Bookings />} />
                 <Route path="profile" element={<Profile />} />
                 <Route path="payment-success" element={<PaymentSuccess />} />

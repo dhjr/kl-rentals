@@ -4,6 +4,7 @@ import {
   getCarById,
   addToCatalog,
   addCarInstance,
+  getSellerInventory,
   deleteCar,
   updateCar,
 } from "../controllers/carController.js";
@@ -16,6 +17,12 @@ router.get("/get-cars", getCatalog);
 router.get("/get-car/:id", getCarById);
 
 // Protected Routes: Only logged-in Admins or Sellers can add/remove cars
+router.get(
+  "/seller-inventory",
+  protect,
+  authorize("seller"),
+  getSellerInventory,
+);
 router.post("/catalog", protect, authorize("seller", "admin"), addToCatalog);
 
 router.post(

@@ -6,6 +6,7 @@ const Register = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [role, setRole] = useState<"user" | "seller">("user");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -21,7 +22,7 @@ const Register = () => {
       const response = await fetch("http://localhost:3000/api/v1/auth/signup", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, role }),
       });
 
       const data = await response.json();
@@ -53,6 +54,32 @@ const Register = () => {
         )}
 
         <form className="space-y-4" onSubmit={handleSubmit}>
+          {/* Role Selection Tabs */}
+          <div className="flex p-1 bg-slate-100 dark:bg-slate-800/50 rounded-xl mb-6">
+            <button
+              type="button"
+              onClick={() => setRole("user")}
+              className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all ${
+                role === "user"
+                  ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              I want to rent
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("seller")}
+              className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all ${
+                role === "seller"
+                  ? "bg-white dark:bg-slate-700 text-blue-600 dark:text-blue-400 shadow-sm"
+                  : "text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
+              }`}
+            >
+              I want to list cars
+            </button>
+          </div>
+
           <div>
             <label className="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1.5">
               Full Name
