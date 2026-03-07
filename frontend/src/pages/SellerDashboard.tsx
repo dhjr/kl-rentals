@@ -47,7 +47,7 @@ const SellerDashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/car/delete-${id}`,
+        `${import.meta.env.VITE_API_URL}/car/delete-${id}`,
         {
           method: "DELETE",
           headers: {
@@ -80,7 +80,7 @@ const SellerDashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        `http://localhost:3000/api/car/update-${id}`,
+        `${import.meta.env.VITE_API_URL}/car/update-${id}`,
         {
           method: "PATCH",
           headers: {
@@ -107,7 +107,7 @@ const SellerDashboard = () => {
     try {
       const token = localStorage.getItem("token");
       const response = await fetch(
-        "http://localhost:3000/api/car/seller-inventory",
+        `${import.meta.env.VITE_API_URL}/car/seller-inventory`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

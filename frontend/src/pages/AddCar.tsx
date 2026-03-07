@@ -52,7 +52,7 @@ const AddCar = () => {
     try {
       // Step 1: Create the Catalog Item
       const catalogResponse = await fetch(
-        "http://localhost:3000/api/car/catalog",
+        `${import.meta.env.VITE_API_URL}/car/catalog`,
         {
           method: "POST",
           headers: {
@@ -98,7 +98,7 @@ const AddCar = () => {
 
       // Step 2: Create the Vehicle Instance assigned to this seller
       const instanceResponse = await fetch(
-        "http://localhost:3000/api/car/inventory",
+        `${import.meta.env.VITE_API_URL}/car/inventory`,
         {
           method: "POST",
           headers: {

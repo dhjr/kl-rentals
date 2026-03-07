@@ -25,7 +25,7 @@ const Bookings = () => {
     const fetchBookings = async () => {
       try {
         const response = await fetch(
-          "http://localhost:3000/api/booking/my-bookings",
+          `${import.meta.env.VITE_API_URL}/booking/my-bookings`,
           {
             headers: {
               Authorization: `Bearer ${token}`,

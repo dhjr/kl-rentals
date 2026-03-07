@@ -40,7 +40,7 @@ const EditCar = () => {
         // We'll fetch from the seller inventory and filter locally for simplicity
         // in a real app, you'd have a GET /api/car/instance/:id route
         const response = await fetch(
-          "http://localhost:3000/api/car/seller-inventory",
+          `${import.meta.env.VITE_API_URL}/car/seller-inventory`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -106,7 +106,7 @@ const EditCar = () => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/car/update-${id}`,
+        `${import.meta.env.VITE_API_URL}/car/update-${id}`,
         {
           method: "PATCH",
           headers: {
