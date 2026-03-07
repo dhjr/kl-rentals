@@ -147,8 +147,14 @@ export const createCheckoutSession = async (req: any, res: any) => {
     });
 
     // 5. Create Stripe Checkout Session
+    const stripeConfig = process.env.STRIPE_SECRET_KEY;
+    if (!stripeConfig) {
+      console.error("❌ STRIPE_SECRET_KEY is missing from process.env");
+      return res.status(500).json({ message: "Payment configuration error" });
+    }
+
     const stripe = getStripe();
-    const session = await stripe.checkout.sessions.create({
+    const sessionOpts: Stripe.Checkout.SessionCreateParams = {
       payment_method_types: ["card"],
       line_items: [
         {
@@ -169,12 +175,22 @@ export const createCheckoutSession = async (req: any, res: any) => {
       metadata: {
         bookingId: newBooking._id.toString(),
       },
-    });
+    };
+
+    console.log(
+      "ℹ️ Creating Stripe session with success_url:",
+      sessionOpts.success_url,
+    );
+
+    const session = await stripe.checkout.sessions.create(sessionOpts);
 
     res.status(200).json({ success: true, url: session.url });
   } catch (error: any) {
-    console.error("Stripe Checkout Error:", error);
-    res.status(500).json({ message: "Failed to create checkout session" });
+    console.error("❌ Stripe Checkout Error:", error);
+    res.status(500).json({
+      message: "Failed to create checkout session",
+      error: error instanceof Error ? error.message : "Unknown error",
+    });
   }
 };
 

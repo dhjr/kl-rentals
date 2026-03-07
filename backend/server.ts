@@ -1,4 +1,5 @@
 import dotenv from "dotenv";
+dotenv.config();
 import express from "express";
 import mongoose from "mongoose";
 import cors from "cors";
@@ -19,7 +20,7 @@ app.use(
   }),
 );
 app.use(express.json());
-dotenv.config();
+// dotenv.config(); (Moved to the top)
 const port = process.env.PORT;
 
 const connectDB = async () => {
@@ -53,6 +54,15 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/booking", bookingRoutes);
 app.use("/api/car", carRoutes);
 app.use("/api/reviews", reviewRoutes);
+
+// Error handling middleware
+app.use((err: any, req: any, res: any, next: any) => {
+  console.error("Internal Server Error:", err);
+  res.status(500).json({
+    message: "Internal Server Error",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined,
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
