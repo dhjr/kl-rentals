@@ -32,6 +32,63 @@ export const carService = {
       throw error;
     }
   },
+  createBooking: async (bookingData: {
+    catalogId: string;
+    startDate: string;
+    endDate: string;
+  }): Promise<any> => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await apiClient.post("/booking/book", bookingData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error creating booking:", error);
+      throw error;
+    }
+  },
+  createCheckoutSession: async (bookingData: {
+    catalogId: string;
+    startDate: string;
+    endDate: string;
+  }): Promise<{ url: string }> => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await apiClient.post(
+        "/booking/create-checkout-session",
+        bookingData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      throw error;
+    }
+  },
+  confirmPayment: async (data: {
+    session_id: string;
+    booking_id: string;
+  }): Promise<any> => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await apiClient.post("/booking/confirm-payment", data, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error confirming payment:", error);
+      throw error;
+    }
+  },
 };
 
 export default apiClient;

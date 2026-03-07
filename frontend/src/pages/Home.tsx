@@ -44,20 +44,20 @@ export default function Home() {
           }}
         ></div>
 
-        <div className="relative z-20 p-8 md:p-16 max-w-2xl">
+        <div className="relative z-20 p-6 md:p-16 max-w-2xl text-center md:text-left mx-auto md:mx-0">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-300 text-sm font-medium mb-6 border border-blue-500/30 backdrop-blur-sm">
             <Star className="w-4 h-4" />
             <span>Top Rated Rental Service</span>
           </div>
-          <h1 className="text-5xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-6xl font-extrabold mb-6 leading-tight tracking-tight">
             Drive Your <span className="text-blue-500">Dream</span> Today
           </h1>
-          <p className="text-lg md:text-xl text-slate-300 mb-8 font-medium leading-relaxed">
+          <p className="text-base md:text-xl text-slate-300 mb-8 font-medium leading-relaxed">
             Experience luxury, comfort, and reliability with our premium fleet
             of vehicles. Whether for business or leisure, we have the perfect
             ride for you.
           </p>
-          <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
             <Link
               to="/cars"
               className="inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-500 text-white px-8 py-4 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 shadow-xl shadow-blue-600/20 ring-1 ring-blue-500/50"

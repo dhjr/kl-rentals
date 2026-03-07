@@ -8,6 +8,8 @@ import Cars from "./pages/Cars";
 import CarDetails from "./pages/CarDetails";
 import Bookings from "./pages/Bookings";
 import Profile from "./pages/Profile";
+import PaymentSuccess from "./pages/PaymentSuccess";
+import PaymentCancel from "./pages/PaymentCancel";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -30,6 +32,8 @@ function App() {
               <Route element={<ProtectedRoute />}>
                 <Route path="bookings" element={<Bookings />} />
                 <Route path="profile" element={<Profile />} />
+                <Route path="payment-success" element={<PaymentSuccess />} />
+                <Route path="payment-cancelled" element={<PaymentCancel />} />
               </Route>
             </Route>
           </Routes>

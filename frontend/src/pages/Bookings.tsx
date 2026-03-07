@@ -104,51 +104,89 @@ const Bookings = () => {
             </p>
           </div>
         ) : (
-          <table className="w-full text-left border-collapse">
-            <thead>
-              <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 transition-colors">
-                <th className="px-6 py-4 font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide text-xs">
-                  Car
-                </th>
-                <th className="px-6 py-4 font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide text-xs">
-                  Dates
-                </th>
-                <th className="px-6 py-4 font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide text-xs">
-                  Total Price
-                </th>
-                <th className="px-6 py-4 font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide text-xs">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+          <>
+            {/* Desktop Table View */}
+            <div className="hidden md:block overflow-x-auto">
+              <table className="w-full text-left border-collapse">
+                <thead>
+                  <tr className="bg-slate-50 dark:bg-slate-950 border-b border-slate-200 dark:border-slate-800 transition-colors">
+                    <th className="px-6 py-4 font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide text-xs">
+                      Car
+                    </th>
+                    <th className="px-6 py-4 font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide text-xs">
+                      Dates
+                    </th>
+                    <th className="px-6 py-4 font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide text-xs">
+                      Total Price
+                    </th>
+                    <th className="px-6 py-4 font-semibold text-slate-600 dark:text-slate-400 uppercase tracking-wide text-xs">
+                      Status
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                  {bookings.map((booking) => (
+                    <tr
+                      key={booking._id}
+                      className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
+                    >
+                      <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-medium">
+                        {booking.vehicleInstance?.catalogItem?.brand}{" "}
+                        {booking.vehicleInstance?.catalogItem?.model}
+                      </td>
+                      <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
+                        {formatDate(booking.startDate)} -{" "}
+                        {formatDate(booking.endDate)}
+                      </td>
+                      <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-medium">
+                        ₹{booking.totalPrice}
+                      </td>
+                      <td className="px-6 py-4">
+                        <span
+                          className={`px-3 py-1 text-xs font-semibold rounded-full uppercase tracking-wide ${getStatusStyle(booking.status)}`}
+                        >
+                          {booking.status}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobile Card View */}
+            <div className="md:hidden divide-y divide-slate-100 dark:divide-slate-800">
               {bookings.map((booking) => (
-                <tr
-                  key={booking._id}
-                  className="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors"
-                >
-                  <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-medium">
-                    {booking.vehicleInstance?.catalogItem?.brand}{" "}
-                    {booking.vehicleInstance?.catalogItem?.model}
-                  </td>
-                  <td className="px-6 py-4 text-slate-600 dark:text-slate-400">
-                    {formatDate(booking.startDate)} -{" "}
-                    {formatDate(booking.endDate)}
-                  </td>
-                  <td className="px-6 py-4 text-slate-900 dark:text-slate-100 font-medium">
-                    ₹{booking.totalPrice}
-                  </td>
-                  <td className="px-6 py-4">
+                <div key={booking._id} className="p-4 space-y-3">
+                  <div className="flex justify-between items-start">
+                    <div>
+                      <p className="font-bold text-slate-900 dark:text-white">
+                        {booking.vehicleInstance?.catalogItem?.brand}{" "}
+                        {booking.vehicleInstance?.catalogItem?.model}
+                      </p>
+                      <p className="text-sm text-slate-500 dark:text-slate-400">
+                        {formatDate(booking.startDate)} -{" "}
+                        {formatDate(booking.endDate)}
+                      </p>
+                    </div>
                     <span
-                      className={`px-3 py-1 text-xs font-semibold rounded-full uppercase tracking-wide ${getStatusStyle(booking.status)}`}
+                      className={`px-2.5 py-1 text-[10px] font-bold rounded-full uppercase tracking-widest ${getStatusStyle(booking.status)}`}
                     >
                       {booking.status}
                     </span>
-                  </td>
-                </tr>
+                  </div>
+                  <div className="flex justify-between items-center pt-2 border-t border-slate-50 dark:border-slate-800/50">
+                    <span className="text-xs font-medium text-slate-500 uppercase tracking-wider">
+                      Total Amount
+                    </span>
+                    <span className="font-bold text-slate-900 dark:text-white">
+                      ₹{booking.totalPrice}
+                    </span>
+                  </div>
+                </div>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </>
         )}
       </div>
     </div>
