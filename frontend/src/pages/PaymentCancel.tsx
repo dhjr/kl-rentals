@@ -1,8 +1,39 @@
-import { useNavigate } from "react-router-dom";
-import { XCircle, ArrowLeft } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
+import { XCircle, ArrowLeft, Loader2 } from "lucide-react";
+import { carService } from "../utils/api";
 
 const PaymentCancel = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [isCancelling, setIsCancelling] = useState(false);
+
+  useEffect(() => {
+    const cancelBooking = async () => {
+      const bookingId = searchParams.get("booking_id");
+
+      if (bookingId) {
+        setIsCancelling(true);
+        try {
+          await carService.cancelBooking(bookingId);
+        } catch (error) {
+          console.error("Failed to cancel booking:", error);
+        } finally {
+          setIsCancelling(false);
+        }
+      }
+    };
+
+    cancelBooking();
+  }, [searchParams]);
+
+  if (isCancelling) {
+    return (
+      <div className="flex justify-center items-center h-[calc(100vh-80px)]">
+        <Loader2 className="animate-spin w-12 h-12 text-blue-600" />
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-xl mx-auto py-24 text-center px-4">

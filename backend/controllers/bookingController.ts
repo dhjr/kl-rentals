@@ -155,7 +155,7 @@ export const createCheckoutSession = async (req: any, res: any) => {
           price_data: {
             currency: "inr",
             product_data: {
-              name: `${catalogItem.brand} ${catalogItem.model}`,
+              name: `${catalogItem.make} ${catalogItem.model}`,
               description: `Booking from ${startDate} to ${endDate} (${days} days)`,
             },
             unit_amount: Math.round(totalPrice * 100), // convert to paise
@@ -165,7 +165,7 @@ export const createCheckoutSession = async (req: any, res: any) => {
       ],
       mode: "payment",
       success_url: `http://localhost:5173/payment-success?session_id={CHECKOUT_SESSION_ID}&booking_id=${newBooking._id}`,
-      cancel_url: `http://localhost:5173/payment-cancelled`,
+      cancel_url: `http://localhost:5173/payment-cancelled?booking_id=${newBooking._id}`,
       metadata: {
         bookingId: newBooking._id.toString(),
       },
@@ -212,5 +212,34 @@ export const confirmBookingPayment = async (req: any, res: any) => {
   } catch (error: any) {
     console.error("Stripe Confirmation Error:", error);
     res.status(500).json({ message: "Failed to confirm payment" });
+  }
+};
+
+export const cancelBooking = async (req: any, res: any) => {
+  try {
+    const { bookingId } = req.body;
+
+    if (!bookingId) {
+      return res.status(400).json({ message: "Booking ID is required" });
+    }
+
+    const booking = await Booking.findById(bookingId);
+
+    if (!booking) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+
+    // Only allow cancelling pending bookings safely
+    if (booking.status === "pending") {
+      booking.status = "cancelled";
+      await booking.save();
+    }
+
+    res
+      .status(200)
+      .json({ success: true, message: "Booking cancelled successfully" });
+  } catch (error: any) {
+    console.error("Cancellation Error:", error);
+    res.status(500).json({ message: "Failed to cancel booking" });
   }
 };

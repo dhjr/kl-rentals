@@ -1,4 +1,4 @@
-import { z, AnyZodObject } from "zod";
+import { z } from "zod";
 
 export type CustomErrorContextAlias = { type?: string };
 export type CustomErrorDefinitionBase<
@@ -6,14 +6,8 @@ export type CustomErrorDefinitionBase<
 > = (ctx: TCtx) => string;
 
 const eventsSchema = z.object({
-  key1: z.string({
-    required_error: "key1 is required",
-    invalid_type_error: "key1 must be a string",
-  }),
-  key2: z.number({
-    required_error: "key2 is required",
-    invalid_type_error: "key2 must be a number",
-  }),
+  key1: z.string(),
+  key2: z.number(),
 });
 
 const payloadSchema = z.object({
@@ -24,7 +18,7 @@ export const handleRequest = (req: any, res: any) => {
   const parsedBody = payloadSchema.safeParse(req.body);
 
   if (!parsedBody.success) {
-    return res.status(400).json({ errors: parsedBody.error.errors });
+    return res.status(400).json({ errors: parsedBody.error });
   }
 
   // The code inside handleRequest parsing req.body doesn't need to be error checked (per prompt)
@@ -37,8 +31,8 @@ export const handleRequest = (req: any, res: any) => {
   });
 
   // Use z.unknown().transform() and map(({ name, _schema: schema }...))
-  const processFilters = <T extends AnyZodObject>(schemaObject: T) => {
-    return z.unknown().transform((val) => {
+  const processFilters = (schemaObject: z.ZodObject<any>) => {
+    return z.unknown().transform((val: any) => {
       // This creates variables key, shapeItems etc to iterate over keys recursively with .map()
       const shapeItems = Object.entries(schemaObject.shape).map(
         ([nestedKey, schema]) => {
@@ -49,7 +43,7 @@ export const handleRequest = (req: any, res: any) => {
         },
       );
 
-      return shapeItems.map(({ name, _schema: schema, value }) => {
+      return shapeItems.map(({ name, _schema: schema, value }: any) => {
         const parsed = schema.safeParse(value);
         return { name, parsed };
       });

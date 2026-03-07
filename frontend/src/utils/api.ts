@@ -89,6 +89,24 @@ export const carService = {
       throw error;
     }
   },
+  cancelBooking: async (bookingId: string): Promise<any> => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await apiClient.patch(
+        "/booking/cancel",
+        { bookingId },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.error("Error cancelling booking:", error);
+      throw error;
+    }
+  },
 };
 
 export default apiClient;

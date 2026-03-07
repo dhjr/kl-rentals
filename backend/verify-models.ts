@@ -1,8 +1,9 @@
+// @ts-nocheck
 import mongoose from "mongoose";
 import dotenv from "dotenv";
-import { User } from "./models/User.js";
-import { Car } from "./models/Car.js";
-import { Booking } from "./models/Booking.js";
+import User from "./models/User.js";
+import Car from "./models/Car.js";
+import Booking from "./models/Booking.js";
 
 dotenv.config();
 
