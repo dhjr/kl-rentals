@@ -31,6 +31,7 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
+    "start": "node dist/server.js",
     "server": "nodemon --exec tsx server.ts"
   }
 }
