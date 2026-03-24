@@ -107,6 +107,16 @@ const AdminUsers = () => {
     );
   }
 
+  if (error) {
+    return (
+      <div className="max-w-6xl mx-auto px-4 py-8">
+        <div className="bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 p-4 rounded-xl border border-red-200 dark:border-red-800">
+          {error}
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-6xl mx-auto px-4 py-8">
       <Link to="/admin/dashboard" className="flex items-center gap-2 text-slate-500 hover:text-blue-600 transition-colors mb-6">
