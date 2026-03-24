@@ -16,6 +16,10 @@ import AddCar from "./pages/AddCar";
 import EditCar from "./pages/EditCar";
 import LandingRouter from "./pages/LandingRouter";
 import CustomerDashboard from "./pages/CustomerDashboard";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminUsers from "./pages/admin/AdminUsers";
+import AdminCars from "./pages/admin/AdminCars";
+import AdminBookings from "./pages/admin/AdminBookings";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -67,6 +71,14 @@ function App() {
                   path="booking-confirmation/:id"
                   element={<BookingConfirmation />}
                 />
+              </Route>
+
+              {/* Admin Protected Routes */}
+              <Route element={<ProtectedRoute allowedRoles={["admin"]} />}>
+                <Route path="admin/dashboard" element={<AdminDashboard />} />
+                <Route path="admin/users" element={<AdminUsers />} />
+                <Route path="admin/cars" element={<AdminCars />} />
+                <Route path="admin/bookings" element={<AdminBookings />} />
               </Route>
             </Route>
           </Routes>

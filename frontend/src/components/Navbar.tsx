@@ -44,6 +44,16 @@ function Navbar() {
         </Link>
       )}
 
+      {user?.role === "admin" && (
+        <Link
+          to="/admin/dashboard"
+          className="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
+          onClick={() => setIsMenuOpen(false)}
+        >
+          Admin Panel
+        </Link>
+      )}
+
       {(!user || user.role !== "seller") && (
         <Link
           to="/cars"
